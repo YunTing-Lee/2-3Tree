@@ -1,4 +1,3 @@
-// 資訊二乙 第15組 10827243 李筠婷 10827254 陳致豪
 #include <iostream>
 #include <fstream>
 #include <vector>
