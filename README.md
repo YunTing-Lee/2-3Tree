@@ -7,3 +7,6 @@
 
 ## 說明 : 
 將input檔案中的學校資訊以**學校名稱**為鍵值一筆一筆新增至23樹中，最後輸出樹高以及根根節點內所儲存的學校資訊
+
+## 程式運作流程 : 
+![image](https://github.com/YunTing-Lee/SICXE-Assembler/blob/main/Picture/SICXE%20pass1.png)
