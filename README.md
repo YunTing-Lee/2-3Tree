@@ -20,7 +20,7 @@ Code::Block20.03
 4. 若輸入正確檔案名稱，則會顯示樹高、樹根節點所儲存的學校資訊、節點總數、學校數量以及所23樹儲存資料的記憶體空間大小
 5. 回到步驟2
 
-使用範例 : 
+使用範例 :  
 ![image](https://github.com/YunTing-Lee/2-3Tree/blob/main/Picture/demo.PNG)
 
 ---
