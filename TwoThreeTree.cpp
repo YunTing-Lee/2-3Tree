@@ -81,53 +81,8 @@ class TwoThreeTree{
 };
 
 
-class AVLNode{ // AVL樹中的一個節點
-public :
-  vector<Department> departmentKey ;
-   int height ;  // 節點的高度
-   AVLNode * leftChild ;
-   AVLNode * rightChild ;
-
-
-   AVLNode() {
-     leftChild = NULL ;
-     rightChild = NULL ;
-     height = 0 ;
-   } // constructor
-
-   AVLNode( Department aDepartment) {
-     leftChild = NULL ;
-     rightChild = NULL ;
-     departmentKey.push_back(aDepartment) ;
-     height = 1 ;
-   } // constructor
-}; // class AVLNode
-
-class AVLTree{
-public :
-
-  AVLNode * root ; // 樹根
-  AVLNode * AVLinsert( Department aDepartment, AVLNode * temp) ;
-  int getBalanceFactor( AVLNode * node ) ;
-  AVLNode * rotateRR( AVLNode * node ) ;
-  AVLNode * rotateLL( AVLNode * node ) ;
-  AVLNode * rotateRL( AVLNode * node ) ;
-  AVLNode * rotateLR( AVLNode * node ) ;
-  int getHeight( AVLNode * node ) ;
-  void printRoot( vector<SchoolType> sch ) ;
-  int numOfNode( AVLNode * avl) ;
-  vector<int> searchDepartment( string departmentName  ) ;
-  int sizeOfTree(AVLNode * walk);
-
-  AVLTree(){
-    root = NULL ;
-  }
-};
-
-
 int ReadCommand() ;  // 讀Command，若是0就直接結束
 int reCommand() ;
-int commandIsTwo(  AVLTree avl, vector<SchoolType> sch  ) ;
 void ReadCollegeAndDepartment( string & collegeName, string & departmentName ) ;
 void Enter() ;      // 讀到'\n'為止
 bool ReadFile( vector<SchoolType> & sch, string & fileId ) ;
@@ -137,7 +92,6 @@ void ReadInputData( fstream & file, vector<SchoolType> & sch ) ; // 讀檔案資料
 string ReadString(fstream & file) ; // 讀file裡的一個字串
 int StringToInt( string str ) ; // 將字串轉成數字
 bool IsDigit( char ch ); // 判斷ch是否為數字
-void searchSchoolAndDepartment( string collegeName, TwoThreeTree tt, string departmentName, AVLTree avl, vector<SchoolType> sch ) ;
 int getMax( int a, int b, int c ) ;
 
 int Max( int a, int b ) {
@@ -166,7 +120,6 @@ int main(){
     string inputFullName, fileId ;
     vector<SchoolType> sch ;
     TwoThreeTree gTwoThree ;
-    AVLTree gAvl ;
     bool firstDone = false, secondDone = false, thirdDone = false ;
 
     while ( command != 0 ) {
@@ -205,58 +158,9 @@ int main(){
                 break ;
                 firstDone = true ;
       } // case1
-      case 2 : {
-
-        if( ! firstDone ) {
-            cout << "### Choose 1 first. ###" << endl ;
-            break ;
-        }
-        AVLTree avl ;
-
-        for ( int i = 0 ; i < sch.size() ; i++ ) {
-           Department aDepartment ;
-           aDepartment.no = sch[i].no ;
-           aDepartment.departmentName = sch[i].departmentName ;
-           avl.root = avl.AVLinsert(aDepartment, avl.root) ;
-        } // for
-
-        gAvl = avl ;
-        cout << "Tree Height =  " << avl.root->height << endl  ;
-        avl.printRoot(sch) ;
-
-
-        int numOfNode = avl.numOfNode(avl.root) ;
-        cout << "Num of AVL Node = " << numOfNode << endl ;
-        cout << "SIZE Of AVLTree = " << avl.sizeOfTree(avl.root) << "bytes. " << endl ;
-
-        secondDone = true ;
-        break ;
-
-    } // else if command == 2
-    case 3 : {
-
-        if( ! firstDone ) {
-            cout << "### Choose 1 first. ###" << endl ;
-            break ;
-        }
-        else if ( ! secondDone ) {
-             cout << "### Choose 2 first. ###" << endl ;
-            break ;
-        }
-       string collegeName, departmentName ;
-       ReadCollegeAndDepartment( collegeName, departmentName ) ;
-       searchSchoolAndDepartment(collegeName, gTwoThree, departmentName, gAvl,sch ) ;
-       break ;
-
-
-    } // case 3
-    case 4 : {
-
-
-
-    } // case 4
     default :
-      cout << "### command does not exist  ###" << endl ;        } // switch command
+      cout << "### command does not exist  ###" << endl ;
+    } // switch command
      command = ReadCommand() ;
   } // while(command != 0)
 
@@ -267,10 +171,8 @@ int ReadCommand(){  // 讀command
   cout << "*******  Search Tree Utilities   ******" << endl ;
   cout << "* 0. QUIT                           ***" << endl ;
   cout << "* 1. Build 2-3 tree                 ***" << endl ;
-  cout << "* 2. Build AVL tree                 ***" << endl ;
-  cout << "* 3. Intersection Query             ***" << endl ;
-  cout << "************************************" << endl ;
-  cout << "Input a choice(0,1,2,3) : "  ;
+  cout << "***************************************" << endl ;
+  cout << "Input a choice(0,1) : "  ;
   string command ;
   cin >> command ;
   int num = atoi( command.c_str() );
@@ -288,10 +190,6 @@ int reCommand(){
     return 0 ;
   else if ( command == 1 )
     return 1 ;
-  else if ( command == 2 || command == 3 ) {
-    cout << "### Choose 1 first. ### " << endl ;
-    return reCommand() ;
-  } // if
   else {
     cout << "### command does not exist  ###" << endl ;
     return reCommand() ;
@@ -299,17 +197,6 @@ int reCommand(){
 
 } // reCommand()
 
-
-int commandIsTwo( AVLTree avl, vector<SchoolType> sch ){
-    int command = 2 ;
-    while( command == 2 ) {
-      cout << "### AVL Tree has been built. ###" << endl ;
-      cout << "Tree Height =  " << avl.root->height << endl ;
-      avl.printRoot(sch) ;
-      command = ReadCommand() ;
-    } // while
-    return command ;
-}
 
 
 void Enter(){        // 讀到'\n'為止
@@ -333,14 +220,14 @@ bool ReadFile( vector<SchoolType> & sch, string & fileId ){
 } //  ReadFile()
 
 void ReadInputFileName( string & fileId,string & inputFullName ){
-  cout << "Input a file number(eg.201,202,203......)[0]Quit : " ;
+  cout << "Input a filename(eg.input1, input2......)[0]Quit : " ;
   cin >> fileId ;
   char ch ;
   cin.get(ch);
   if ( ch != '\n')
     Enter() ;
-  inputFullName = "input.txt" ;
-  inputFullName = inputFullName.insert( 5,fileId );
+  //inputFullName = "input.txt" ;
+  inputFullName = fileId + ".txt";
 } // ReadInputFileName
 
 bool OpenInputFile( string & fileId,string & inputFullName,fstream & inputFile ){
@@ -733,191 +620,6 @@ int getMax( int a, int b, int c ) {
     return c ;
 } // getMax()
 
-
-AVLNode * AVLTree :: AVLinsert( Department aDepartment, AVLNode * avlNode ) {
-
-  if ( avlNode == NULL ) {
-    avlNode = new AVLNode(aDepartment) ;
-    return avlNode ;
-  } // if ( root == NULL )
-  else if ((aDepartment.departmentName).compare( avlNode->departmentKey[0].departmentName) == 0 ){ // 一樣科系
-    avlNode->departmentKey.push_back(aDepartment) ;
-    return avlNode ;
-  } // else if
-  else if ( (aDepartment.departmentName).compare( avlNode->departmentKey[0].departmentName) < 0 ) {
-    avlNode->leftChild = AVLinsert( aDepartment, avlNode->leftChild ) ;
-  } // else if
-  else if ( (aDepartment.departmentName).compare( avlNode->departmentKey[0].departmentName) > 0 ) {
-    avlNode->rightChild = AVLinsert( aDepartment, avlNode->rightChild ) ;
-  } // else if
-
-   avlNode->height = 1 + Max( getHeight(avlNode->leftChild), getHeight(avlNode->rightChild) );
-
-   int balanceFactor = getBalanceFactor(avlNode) ;
-
-   if ( balanceFactor >= -1 && balanceFactor <= 1 )   // 不用做旋轉
-     return avlNode ;
-   else if ( balanceFactor < -1 && getBalanceFactor(avlNode->rightChild) < 0 ) {  // RotateRR
-     return rotateRR( avlNode );
-   } // else if
-   else if ( balanceFactor > 1 && getBalanceFactor(avlNode->leftChild) > 0 ) {  // RotateLL
-     return rotateLL( avlNode );
-   } // else if
-   else if ( balanceFactor < -1 && getBalanceFactor(avlNode->rightChild) > 0 ) {  // RotateRL
-     return rotateRL( avlNode );
-   } // else if
-   else if ( balanceFactor > 1 && getBalanceFactor(avlNode->leftChild) < 0 ) {  // RotateLR
-     return rotateLR( avlNode );
-
-   } // else if
-} // AVLTree :: AVLinsert()
-
-AVLNode * AVLTree :: rotateRR( AVLNode * node ) {
-  AVLNode * newParent = node ->rightChild ;
-  node->rightChild = newParent->leftChild ;
-  newParent->leftChild = node ;
-
-  node->height = 1 + Max( getHeight(node->leftChild), getHeight(node->rightChild)  ) ;
-  newParent->height = 1 + Max( getHeight(newParent->leftChild), getHeight(newParent->rightChild)  ) ;
-  return newParent ;
-} // rotateRR()
-
-AVLNode * AVLTree :: rotateLL( AVLNode * node ) {
-  AVLNode * newParent = node ->leftChild ;
-  node->leftChild = newParent->rightChild ;
-  newParent->rightChild = node ;
-
-  node->height = 1 + Max( getHeight(node->leftChild), getHeight(node->rightChild)  ) ;
-  //cout << "node->height = " << node->height << endl ;
-  newParent->height = 1 + Max( getHeight(newParent->leftChild), getHeight(newParent->rightChild)  ) ;
-  //cout << "newParent->height = " << newParent->height << endl ;
-  return newParent ;
-} // rotateLL()
-
-AVLNode * AVLTree :: rotateRL( AVLNode * node ) {
-
-  node->rightChild = rotateLL( node->rightChild ) ; // 先變成RR型態
-  return rotateRR(node) ;
-} // rotateRR()
-
-AVLNode * AVLTree :: rotateLR( AVLNode * node ) {
-  node->leftChild = rotateRR( node->leftChild ) ;  // 先變成LL型態
-  return rotateLL(node) ;
-} // rotateLR()
-
-
-
-
-int AVLTree :: getBalanceFactor( AVLNode * node ) { // 計算node的BF，即左右子樹高度差
-
-  return getHeight(node->leftChild) - getHeight(node->rightChild) ;
-} // AVLTree :: calBalanceFactor()
-
-int AVLTree :: getHeight( AVLNode * node ) {
-  if ( node == NULL )
-    return 0 ;
-  else
-    return node->height ;
-}
-
-void AVLTree :: printRoot( vector<SchoolType> sch ) {
-  if ( root == NULL )
-    return ;
-  int numOfRoot = 0 ;
-  for ( int i = 0 ; i < root->departmentKey.size() ; i++ ) {
-    numOfRoot++ ;
-    cout << numOfRoot << " : " ;
-    int rootIndex = root->departmentKey[i].no - 1 ;
-    cout << "[" << sch[rootIndex].no << "] " ; // 序號
-    cout << sch[rootIndex].schoolName << ", " << sch[rootIndex].departmentName << ", " << sch[rootIndex].dayNight << ", "
-          <<  sch[rootIndex].level << ", " << sch[rootIndex].studentNum << endl ;
-  } // for
-} // printRoot()
-
-vector<int> AVLTree :: searchDepartment( string departmentName ) {
-
-  vector<int> sameNo ;
-  AVLNode * avlWalk = root ;
-  while( avlWalk != NULL && (avlWalk->departmentKey[0].departmentName).compare( departmentName) != 0 ) {
-    if ( departmentName.compare( avlWalk->departmentKey[0].departmentName) < 0 ) {
-      avlWalk = avlWalk->leftChild ;
-    } // if
-    else{
-      avlWalk = avlWalk->rightChild ;
-    }
-  } // while
-  if ( avlWalk != NULL ) {
-    for( int i = 0 ; i < avlWalk->departmentKey.size() ; i++ ) {
-        sameNo.push_back(avlWalk->departmentKey[i].no) ;
-    } // for
-  } // if
-  return sameNo ; // 回傳一樣科系名稱的序號
-} // AVLTree :: searchDepartment
-
-void searchSchoolAndDepartment( string collegeName, TwoThreeTree tt, string departmentName, AVLTree avl, vector<SchoolType> sch ) {
-  vector<int> collegeNo ;
-  vector<int> departmentNo ;
-  vector<int> intersectionNo ;
-
-  if ( collegeName == "*" && departmentName == "*" ) {     // 要尋找的學校名稱跟科系名稱都是don't care
-    for( int i = 0 ; i < sch.size() ; i++ )
-        intersectionNo.push_back( sch[i].no ) ;
-  } // if
-  else if ( collegeName == "*" ) {  // 只有學校名稱是don't care
-    intersectionNo = avl.searchDepartment( departmentName ) ; // 在avl樹中尋找與departmentName相同的科系名稱
-  } // if
-  else if( departmentName == "*" ) {  // 只有科系名稱是don't care
-    intersectionNo = tt.searchCollege( collegeName ) ; // 在23樹中尋找與collegeName相同的學校名稱
-  } // if
-  else{
-    collegeNo = tt.searchCollege(collegeName) ;
-    departmentNo = avl.searchDepartment( departmentName ) ;
-
-    for( int i = 0 ; i < collegeNo.size() ; i++ ) {
-        for( int j = 0 ; j < departmentNo.size() ; j++ ) {
-           if ( collegeNo[i] == departmentNo[j] ) {  // 將相同的序號存進intersectionNo中
-              intersectionNo.push_back( collegeNo[i] ) ;
-           } // if
-        } // for
-    } // for
-  } // if
-
-
-
-  int numOfIntersection = 0 ;
-  for( int i = 0 ; i < intersectionNo.size() ; i++ ) {
-    numOfIntersection++ ;
-    int sameIndex = intersectionNo[i] - 1 ;
-    cout << numOfIntersection << " : " ;
-    cout << "[" << sch[sameIndex].no << "] " ; // 序號
-    cout << sch[sameIndex].schoolName << ", " << sch[sameIndex].departmentName << ", " << sch[sameIndex].dayNight << ", "
-          <<  sch[sameIndex].level << ", " << sch[sameIndex].studentNum << endl ;
-  } // for
-
-
-} // searchSchoolAndDepartment
-
-int AVLTree :: numOfNode( AVLNode * temp ){
-  if ( temp == NULL )
-    return 0 ;
-  return 1 + numOfNode( temp->leftChild ) + numOfNode( temp->rightChild) ;
-
-} //AVLTree :: numOfNode( AVLNode * temp )
-
-int AVLTree :: sizeOfTree( AVLNode * walk ){
-  if( walk == NULL )
-    return 0 ;
-  else{
-    int sizeOfNode = 16 ; // 一個pointer占8個byte，1個avlNode有2個pointer
-    for( int i = 0 ; i < walk->departmentKey.size() ; i++ ) {
-      int sizeOfString = walk->departmentKey[i].departmentName.size();
-      int sizeOfNo = sizeof(walk->departmentKey[i].no) ;
-      sizeOfNode = sizeOfNode + sizeOfString + sizeOfNo ;
-    } // for
-    return sizeOfNode + sizeOfTree(walk->leftChild) + sizeOfTree(walk->rightChild) ;
-  } // else
-
-} // sizeOfTree( AVLNode * walk )
 
 int TwoThreeTree :: sizeOfTree( TwoThreeNode * walk ){
   if ( walk == NULL )
